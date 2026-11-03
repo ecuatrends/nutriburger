@@ -581,7 +581,8 @@ checkoutForm.addEventListener("submit", (event) => {
     `¿Me ayudan confirmando disponibilidad y cómo puedo realizar el pago? ¡Gracias! ${MESSAGE_EMOJI.thanks}`
   ].filter(Boolean);
 
-  const whatsappUrl = new URL(`https://wa.me/${RESTAURANT.whatsapp}`);
+  const whatsappUrl = new URL("https://api.whatsapp.com/send");
+  whatsappUrl.searchParams.set("phone", RESTAURANT.whatsapp);
   whatsappUrl.searchParams.set("text", details.join("\n"));
   window.open(whatsappUrl.toString(), "_blank", "noopener,noreferrer");
 });
