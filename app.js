@@ -132,6 +132,19 @@ const drinks = [
 
 const CART_STORAGE_KEY = "brasa-barrio-cart";
 const THEME_STORAGE_KEY = "nutriburger-theme";
+const MESSAGE_EMOJI = {
+  greeting: "\u{1F44B}",
+  burger: "\u{1F354}",
+  order: "\u{1F6D2}",
+  remove: "\u{1F6AB}",
+  extra: "\u{2795}",
+  drink: "\u{1F964}",
+  total: "\u{1F4B0}",
+  delivery: "\u{1F4E6}",
+  location: "\u{1F4CD}",
+  note: "\u{1F4DD}",
+  thanks: "\u{1F60A}"
+};
 let cart = loadCart();
 let toastTimeout;
 let selectedProduct = null;
@@ -541,34 +554,36 @@ checkoutForm.addEventListener("submit", (event) => {
     const product = products.find((entry) => entry.id === item.productId);
     if (!product) return [];
     const details = [
-      item.removedIngredients.length ? `   🚫 Sin: ${item.removedIngredients.join(", ")}` : "",
+      item.removedIngredients.length ? `   ${MESSAGE_EMOJI.remove} Sin: ${item.removedIngredients.join(", ")}` : "",
       item.addOnIds.length
-        ? `   ➕ Extras: ${getAddOns(product).filter((addOn) => item.addOnIds.includes(addOn.id)).map((addOn) => addOn.name).join(", ")}`
+        ? `   ${MESSAGE_EMOJI.extra} Extras: ${getAddOns(product).filter((addOn) => item.addOnIds.includes(addOn.id)).map((addOn) => addOn.name).join(", ")}`
         : "",
-      getDrink(item.drinkId) ? `   🥤 Bebida: ${getDrink(item.drinkId).name}` : ""
+      getDrink(item.drinkId) ? `   ${MESSAGE_EMOJI.drink} Bebida: ${getDrink(item.drinkId).name}` : ""
     ].filter(Boolean);
 
     return [
-      `🍽️ ${item.quantity} × *${product.name}* — ${formatPrice(getLinePrice(product, item) * item.quantity)}`,
+      `${MESSAGE_EMOJI.burger} ${item.quantity} x *${product.name}* - ${formatPrice(getLinePrice(product, item) * item.quantity)}`,
       ...details
     ];
   });
   const details = [
-    `¡Hola, Nutriburger! 👋🍔`,
+    `¡Hola, Nutriburger! ${MESSAGE_EMOJI.greeting} ${MESSAGE_EMOJI.burger}`,
     `Soy *${formData.get("name")}* y quisiera hacer este pedido:`,
     "",
-    "🧾 *Mi pedido*",
+    `${MESSAGE_EMOJI.order} *Mi pedido*`,
     ...lines,
     "",
-    `💰 *Total estimado: ${formatPrice(getCartTotal())}*`,
-    `📦 *Entrega:* ${formData.get("orderType")}`,
-    formData.get("address") ? `📍 *Dirección:* ${formData.get("address")}` : "",
-    formData.get("notes") ? `📝 *Nota:* ${formData.get("notes")}` : "",
+    `${MESSAGE_EMOJI.total} *Total estimado: ${formatPrice(getCartTotal())}*`,
+    `${MESSAGE_EMOJI.delivery} *Entrega:* ${formData.get("orderType")}`,
+    formData.get("address") ? `${MESSAGE_EMOJI.location} *Dirección:* ${formData.get("address")}` : "",
+    formData.get("notes") ? `${MESSAGE_EMOJI.note} *Nota:* ${formData.get("notes")}` : "",
     "",
-    "¿Me ayudan confirmando disponibilidad y cómo puedo realizar el pago? ¡Gracias! 😊"
+    `¿Me ayudan confirmando disponibilidad y cómo puedo realizar el pago? ¡Gracias! ${MESSAGE_EMOJI.thanks}`
   ].filter(Boolean);
 
-  window.open(`https://wa.me/${RESTAURANT.whatsapp}?text=${encodeURIComponent(details.join("\n"))}`, "_blank", "noopener,noreferrer");
+  const whatsappUrl = new URL(`https://wa.me/${RESTAURANT.whatsapp}`);
+  whatsappUrl.searchParams.set("text", details.join("\n"));
+  window.open(whatsappUrl.toString(), "_blank", "noopener,noreferrer");
 });
 
 document.addEventListener("keydown", (event) => {
