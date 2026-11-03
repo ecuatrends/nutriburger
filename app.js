@@ -541,29 +541,31 @@ checkoutForm.addEventListener("submit", (event) => {
     const product = products.find((entry) => entry.id === item.productId);
     if (!product) return [];
     const details = [
-      item.removedIngredients.length ? `  - Sin: ${item.removedIngredients.join(", ")}` : "",
+      item.removedIngredients.length ? `   🚫 Sin: ${item.removedIngredients.join(", ")}` : "",
       item.addOnIds.length
-        ? `  - Extras: ${getAddOns(product).filter((addOn) => item.addOnIds.includes(addOn.id)).map((addOn) => addOn.name).join(", ")}`
+        ? `   ➕ Extras: ${getAddOns(product).filter((addOn) => item.addOnIds.includes(addOn.id)).map((addOn) => addOn.name).join(", ")}`
         : "",
-      getDrink(item.drinkId) ? `  - Bebida: ${getDrink(item.drinkId).name}` : ""
+      getDrink(item.drinkId) ? `   🥤 Bebida: ${getDrink(item.drinkId).name}` : ""
     ].filter(Boolean);
 
     return [
-      `• ${item.quantity} x ${product.name} — ${formatPrice(getLinePrice(product, item) * item.quantity)}`,
+      `🍽️ ${item.quantity} × *${product.name}* — ${formatPrice(getLinePrice(product, item) * item.quantity)}`,
       ...details
     ];
   });
   const details = [
-    `¡Hola! Soy ${formData.get("name")} y quisiera hacer este pedido:`,
+    `¡Hola, Nutriburger! 👋🍔`,
+    `Soy *${formData.get("name")}* y quisiera hacer este pedido:`,
     "",
+    "🧾 *Mi pedido*",
     ...lines,
     "",
-    `*Total estimado: ${formatPrice(getCartTotal())}*`,
-    `Modalidad: ${formData.get("orderType")}`,
-    formData.get("address") ? `Dirección: ${formData.get("address")}` : "",
-    formData.get("notes") ? `Nota: ${formData.get("notes")}` : "",
+    `💰 *Total estimado: ${formatPrice(getCartTotal())}*`,
+    `📦 *Entrega:* ${formData.get("orderType")}`,
+    formData.get("address") ? `📍 *Dirección:* ${formData.get("address")}` : "",
+    formData.get("notes") ? `📝 *Nota:* ${formData.get("notes")}` : "",
     "",
-    "Quisiera confirmar disponibilidad y coordinar el pago."
+    "¿Me ayudan confirmando disponibilidad y cómo puedo realizar el pago? ¡Gracias! 😊"
   ].filter(Boolean);
 
   window.open(`https://wa.me/${RESTAURANT.whatsapp}?text=${encodeURIComponent(details.join("\n"))}`, "_blank", "noopener,noreferrer");
